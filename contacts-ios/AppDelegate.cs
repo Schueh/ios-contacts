@@ -64,7 +64,7 @@ namespace contactsios
         {
             if (secondaryViewController.GetType() == typeof(UINavigationController) &&
             ((UINavigationController)secondaryViewController).TopViewController.GetType() == typeof(DetailViewController) &&
-            ((DetailViewController)((UINavigationController)secondaryViewController).TopViewController).DetailItem == null)
+            ((DetailViewController)((UINavigationController)secondaryViewController).TopViewController).Contact == null)
             {
                 // Return YES to indicate that we have handled the collapse by doing nothing; the secondary controller will be discarded.
                 return true;

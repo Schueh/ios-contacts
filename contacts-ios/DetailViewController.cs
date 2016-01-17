@@ -1,23 +1,24 @@
 ﻿using System;
 
 using UIKit;
+using contactsios.model;
 
 namespace contactsios
 {
     public partial class DetailViewController : UIViewController
     {
-        public object DetailItem { get; set; }
+        public Contact Contact { get; set; }
 
         public DetailViewController(IntPtr handle)
             : base(handle)
         {
         }
 
-        public void SetDetailItem(object newDetailItem)
+        public void SetDetailItem(Contact contact)
         {
-            if (DetailItem != newDetailItem)
+            if (Contact != contact)
             {
-                DetailItem = newDetailItem;
+                Contact = contact;
 				
                 // Update the view
                 ConfigureView();
@@ -27,8 +28,8 @@ namespace contactsios
         void ConfigureView()
         {
             // Update the user interface for the detail item
-            if (IsViewLoaded && DetailItem != null)
-                detailDescriptionLabel.Text = DetailItem.ToString();
+            if (IsViewLoaded && Contact != null)
+                return; // TODO: Update labels and image view
         }
 
         public override void ViewDidLoad()

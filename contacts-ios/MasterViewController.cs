@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UIKit;
 using Foundation;
 using CoreGraphics;
+using contactsios.model;
 
 namespace contactsios
 {
@@ -62,7 +63,7 @@ namespace contactsios
                 var indexPath = TableView.IndexPathForSelectedRow;
                 var item = dataSource.Objects[indexPath.Row];
                 var controller = (DetailViewController)((UINavigationController)segue.DestinationViewController).TopViewController;
-                controller.SetDetailItem(item);
+                controller.SetDetailItem(item as Contact);
                 controller.NavigationItem.LeftBarButtonItem = SplitViewController.DisplayModeButtonItem;
                 controller.NavigationItem.LeftItemsSupplementBackButton = true;
             }
@@ -128,7 +129,7 @@ namespace contactsios
             public override void RowSelected(UITableView tableView, NSIndexPath indexPath)
             {
                 if (UIDevice.CurrentDevice.UserInterfaceIdiom == UIUserInterfaceIdiom.Pad)
-                    controller.DetailViewController.SetDetailItem(objects[indexPath.Row]);
+                    controller.DetailViewController.SetDetailItem(objects[indexPath.Row] as Contact);
             }
         }
     }
