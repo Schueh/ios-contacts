@@ -106,7 +106,7 @@
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />
   <ItemGroup>
     <ProjectReference Include="..\contacts-ios.model\contacts-ios.model.csproj">
-      <Project>{4EE76702-B82D-43CC-A008-E58CCB2B13F2}</Project>
+      <Project>{69F93B72-4BBF-4E42-A4BD-00EB6BE53900}</Project>
       <Name>contacts-ios.model</Name>
     </ProjectReference>
   </ItemGroup>

@@ -1,5 +1,4 @@
-﻿using System;
-
+﻿
 namespace contactsios.model
 {
     public class Contact
