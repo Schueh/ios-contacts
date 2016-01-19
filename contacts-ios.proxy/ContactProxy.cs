@@ -1,39 +1,41 @@
-﻿using System.Net.Http;
+﻿using System.Linq;
+using System.Net.Http;
 using System.Threading.Tasks;
 using contactsios.model;
 using Newtonsoft.Json;
+using System.Collections.Generic;
 
 namespace contactsios.proxy
 {
     public class ContactProxy
     {
-        public async Task<Contact> GetContact()
+        public async Task<IList<Contact>> GetContacts()
         {
-            string userJson = await GetUserJson();
+            string randomUsersJson = await GetUsersJson();
 
-            dynamic userObject = JsonConvert.DeserializeObject<dynamic>(userJson).results[0].user;
+            List<Result> randomUsers = JsonConvert.DeserializeObject<RootObject>(randomUsersJson).results;
 
-            return new Contact
-            {
-                FirstName = userObject.name.first,
-                LastName = userObject.name.last,
-                Address = new Address
+            return randomUsers.Select(x => new Contact
+                {
+                    FirstName = x.user.name.first,
+                    LastName = x.user.name.last,
+                    Address = new Address
                     {
-                        Street = userObject.location.street,
-                        Zip = userObject.location.zip,
-                        City = userObject.location.city
+                        Street = x.user.location.street,
+                        Zip = x.user.location.zip,
+                        City = x.user.location.city
                     },
-                Email = userObject.email,
-                Phone = userObject.phone,
-                Picture = userObject.picture.medium
-            };
+                    Email = x.user.email,
+                    Phone = x.user.phone,
+                    Picture = x.user.picture.medium
+                }).ToList();
         }
 
-        private async Task<string> GetUserJson()
+        private async Task<string> GetUsersJson()
         {
             using (var client = new HttpClient())
             {
-                using (HttpResponseMessage response = await client.GetAsync("https://randomuser.me/api/"))
+                using (HttpResponseMessage response = await client.GetAsync("https://randomuser.me/api/?results=30"))
                 {
                     using (HttpContent content = response.Content)
                     {

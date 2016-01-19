@@ -5,6 +5,8 @@ using UIKit;
 using Foundation;
 using CoreGraphics;
 using contactsios.model;
+using contactsios.proxy;
+using System.Threading.Tasks;
 
 namespace contactsios
 {
@@ -12,48 +14,54 @@ namespace contactsios
     {
         public DetailViewController DetailViewController { get; set; }
 
+        ContactProxy _contactProxy;
+
         DataSource dataSource;
 
         public MasterViewController(IntPtr handle)
             : base(handle)
         {
-            Title = NSBundle.MainBundle.LocalizedString("Master", "Master");
+            Title = "Contacts";
 			
             if (UIDevice.CurrentDevice.UserInterfaceIdiom == UIUserInterfaceIdiom.Pad)
             {
                 PreferredContentSize = new CGSize(320f, 600f);
                 ClearsSelectionOnViewWillAppear = false;
             }
+
+            _contactProxy = new ContactProxy();
         }
 
-        public override void ViewDidLoad()
+        // async void is ok for events
+        public override async void ViewDidLoad()
         {
             base.ViewDidLoad();
 
             // Perform any additional setup after loading the view, typically from a nib.
             NavigationItem.LeftBarButtonItem = EditButtonItem;
 
-            var addButton = new UIBarButtonItem(UIBarButtonSystemItem.Add, AddNewItem);
-            addButton.AccessibilityLabel = "addButton";
-            NavigationItem.RightBarButtonItem = addButton;
-
             DetailViewController = (DetailViewController)((UINavigationController)SplitViewController.ViewControllers[1]).TopViewController;
 
             TableView.Source = dataSource = new DataSource(this);
+
+            await LoadContacts();
+        }
+
+        private async Task LoadContacts()
+        {
+            foreach (var contact in await _contactProxy.GetContacts())
+            {
+                dataSource.Objects.Add(contact);
+
+                using (var indexPath = NSIndexPath.FromRowSection(0, 0))
+                    TableView.InsertRows(new [] { indexPath }, UITableViewRowAnimation.Automatic);
+            }
         }
 
         public override void DidReceiveMemoryWarning()
         {
             base.DidReceiveMemoryWarning();
             // Release any cached data, images, etc that aren't in use.
-        }
-
-        void AddNewItem(object sender, EventArgs args)
-        {
-            dataSource.Objects.Insert(0, DateTime.Now);
-
-            using (var indexPath = NSIndexPath.FromRowSection(0, 0))
-                TableView.InsertRows(new [] { indexPath }, UITableViewRowAnimation.Automatic);
         }
 
         public override void PrepareForSegue(UIStoryboardSegue segue, NSObject sender)
@@ -72,7 +80,7 @@ namespace contactsios
         class DataSource : UITableViewSource
         {
             static readonly NSString CellIdentifier = new NSString("Cell");
-            readonly List<object> objects = new List<object>();
+            readonly List<Contact> contacts = new List<Contact>();
             readonly MasterViewController controller;
 
             public DataSource(MasterViewController controller)
@@ -80,9 +88,9 @@ namespace contactsios
                 this.controller = controller;
             }
 
-            public IList<object> Objects
+            public IList<Contact> Objects
             {
-                get { return objects; }
+                get { return contacts; }
             }
 
             // Customize the number of sections in the table view.
@@ -93,7 +101,7 @@ namespace contactsios
 
             public override nint RowsInSection(UITableView tableview, nint section)
             {
-                return objects.Count;
+                return contacts.Count;
             }
 
             // Customize the appearance of table view cells.
@@ -101,7 +109,7 @@ namespace contactsios
             {
                 var cell = tableView.DequeueReusableCell(CellIdentifier, indexPath);
 
-                cell.TextLabel.Text = objects[indexPath.Row].ToString();
+                cell.TextLabel.Text = contacts[indexPath.Row].ToString();
 
                 return cell;
             }
@@ -117,7 +125,7 @@ namespace contactsios
                 if (editingStyle == UITableViewCellEditingStyle.Delete)
                 {
                     // Delete the row from the data source.
-                    objects.RemoveAt(indexPath.Row);
+                    contacts.RemoveAt(indexPath.Row);
                     controller.TableView.DeleteRows(new [] { indexPath }, UITableViewRowAnimation.Fade);
                 }
                 else if (editingStyle == UITableViewCellEditingStyle.Insert)
@@ -129,7 +137,7 @@ namespace contactsios
             public override void RowSelected(UITableView tableView, NSIndexPath indexPath)
             {
                 if (UIDevice.CurrentDevice.UserInterfaceIdiom == UIUserInterfaceIdiom.Pad)
-                    controller.DetailViewController.SetDetailItem(objects[indexPath.Row] as Contact);
+                    controller.DetailViewController.SetDetailItem(contacts[indexPath.Row] as Contact);
             }
         }
     }

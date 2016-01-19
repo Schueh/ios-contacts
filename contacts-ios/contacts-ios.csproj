@@ -79,6 +79,15 @@
     <Reference Include="System.Xml" />
     <Reference Include="System.Core" />
     <Reference Include="Xamarin.iOS" />
+    <Reference Include="System.Net.Http.Primitives">
+      <HintPath>..\packages\Microsoft.Net.Http.2.2.29\lib\Xamarin.iOS10\System.Net.Http.Primitives.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Net.Http.Extensions">
+      <HintPath>..\packages\Microsoft.Net.Http.2.2.29\lib\Xamarin.iOS10\System.Net.Http.Extensions.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\packages\Newtonsoft.Json.8.0.2\lib\portable-net40+sl5+wp80+win8+wpa81\Newtonsoft.Json.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <ImageAsset Include="Resources\Images.xcassets\AppIcons.appiconset\Contents.json" />
@@ -90,6 +99,7 @@
   <ItemGroup>
     <None Include="Info.plist" />
     <None Include="Entitlements.plist" />
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Main.cs" />
@@ -108,6 +118,10 @@
     <ProjectReference Include="..\contacts-ios.model\contacts-ios.model.csproj">
       <Project>{69F93B72-4BBF-4E42-A4BD-00EB6BE53900}</Project>
       <Name>contacts-ios.model</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\contacts-ios.proxy\contacts-ios.proxy.csproj">
+      <Project>{1B640E6B-0C8A-4880-9391-5697B3FB1EA7}</Project>
+      <Name>contacts-ios.proxy</Name>
     </ProjectReference>
   </ItemGroup>
 </Project>
