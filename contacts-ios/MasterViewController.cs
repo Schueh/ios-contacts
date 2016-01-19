@@ -49,15 +49,16 @@ namespace contactsios
 
         private async Task LoadContacts()
         {
+            busyIndicator.StartAnimating();
+
             foreach (var contact in await _contactProxy.GetContacts())
             {
                 dataSource.Objects.Add(contact);
-
-                using (var indexPath = NSIndexPath.FromRowSection(0, 0))
-                {
-                    TableView.InsertRows(new [] { indexPath }, UITableViewRowAnimation.Automatic);
-                }
             }
+
+            TableView.ReloadData();
+
+            busyIndicator.StopAnimating();
         }
 
         public override void DidReceiveMemoryWarning()
@@ -111,9 +112,21 @@ namespace contactsios
             {
                 var cell = tableView.DequeueReusableCell(CellIdentifier, indexPath);
 
-                cell.TextLabel.Text = contacts[indexPath.Row].ToString();
+                Contact contact = contacts[indexPath.Row];
+                cell.TextLabel.Text = contact.ToString();
+                cell.DetailTextLabel.Text = contact.Email;
+                cell.ImageView.Image = GetPicture(contact.Picture);
 
                 return cell;
+            }
+
+            private UIImage GetPicture(string pictureUrl)
+            {
+                using (var url = new NSUrl(pictureUrl))
+                using (var data = NSData.FromUrl(url))
+                {
+                    return UIImage.LoadFromData(data);
+                }
             }
 
             public override bool CanEditRow(UITableView tableView, NSIndexPath indexPath)
