@@ -54,7 +54,9 @@ namespace contactsios
                 dataSource.Objects.Add(contact);
 
                 using (var indexPath = NSIndexPath.FromRowSection(0, 0))
+                {
                     TableView.InsertRows(new [] { indexPath }, UITableViewRowAnimation.Automatic);
+                }
             }
         }
 
@@ -71,7 +73,7 @@ namespace contactsios
                 var indexPath = TableView.IndexPathForSelectedRow;
                 var item = dataSource.Objects[indexPath.Row];
                 var controller = (DetailViewController)((UINavigationController)segue.DestinationViewController).TopViewController;
-                controller.SetDetailItem(item as Contact);
+                controller.SetDetailItem(item);
                 controller.NavigationItem.LeftBarButtonItem = SplitViewController.DisplayModeButtonItem;
                 controller.NavigationItem.LeftItemsSupplementBackButton = true;
             }

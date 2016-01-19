@@ -2,6 +2,7 @@
 
 using UIKit;
 using contactsios.model;
+using Foundation;
 
 namespace contactsios
 {
@@ -16,20 +17,30 @@ namespace contactsios
 
         public void SetDetailItem(Contact contact)
         {
-            if (Contact != contact)
-            {
-                Contact = contact;
-				
-                // Update the view
-                ConfigureView();
-            }
+            Contact = contact;
         }
 
         void ConfigureView()
         {
-            // Update the user interface for the detail item
-            if (IsViewLoaded && Contact != null)
-                return; // TODO: Update labels and image view
+            Title = string.Format("{0} {1}", Contact.FirstName, Contact.LastName);
+
+            SetPicture(Contact.Picture);
+
+            firstName.Text = Contact.FirstName;
+            lastName.Text = Contact.LastName;
+            street.Text = Contact.Address.Street;
+            zipCity.Text = string.Format("{0} {1}", Contact.Address.Zip, Contact.Address.City);
+            phone.Text = Contact.Phone;
+            eMail.Text = Contact.Email;
+        }
+
+        private void SetPicture(string pictureUrl)
+        {
+            using (var url = new NSUrl(pictureUrl))
+            using (var data = NSData.FromUrl(url))
+            {
+                picture.Image = UIImage.LoadFromData(data);
+            }
         }
 
         public override void ViewDidLoad()

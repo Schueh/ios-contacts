@@ -32,6 +32,10 @@ namespace contactsios
 
 		[Outlet]
 		[GeneratedCode ("iOS Designer", "1.0")]
+		UIImageView picture { get; set; }
+
+		[Outlet]
+		[GeneratedCode ("iOS Designer", "1.0")]
 		UILabel street { get; set; }
 
 		[Outlet]
@@ -55,6 +59,10 @@ namespace contactsios
 			if (phone != null) {
 				phone.Dispose ();
 				phone = null;
+			}
+			if (picture != null) {
+				picture.Dispose ();
+				picture = null;
 			}
 			if (street != null) {
 				street.Dispose ();
